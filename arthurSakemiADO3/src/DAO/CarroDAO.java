@@ -20,6 +20,7 @@ public class CarroDAO {
     public static String SENHA = "";
 
     public static String URL = "jdbc:mysql://localhost:3307/lojacarro?useTimezone=true&serverTimezone=UTC&useSSL=false";
+//    public static String URL = "jdbc:mysql://localhost:3306/lojacarros?useTimezone=true&serverTimezone=UTC&useSSL=false";
 
     public static boolean salvar(CarroModel c) {
         boolean retorno = false;
