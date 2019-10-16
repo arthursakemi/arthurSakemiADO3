@@ -20,7 +20,6 @@ public class CarroDAO {
     public static String SENHA = "";
 
     public static String URL = "jdbc:mysql://localhost:3307/lojacarro?useTimezone=true&serverTimezone=UTC&useSSL=false";
-//    public static String URL = "jdbc:mysql://localhost:3306/lojacarros?useTimezone=true&serverTimezone=UTC&useSSL=false";
 
     public static boolean salvar(CarroModel c) {
         boolean retorno = false;
@@ -28,10 +27,9 @@ public class CarroDAO {
         Statement instrucaoSQL = null;
 
         try {
-            //Carrega a classe responsável pelo driver
+
             Class.forName(DRIVER);
 
-            //Tenta estabeler a conexão com o SGBD e cria o objeto de conexão
             conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
             instrucaoSQL = conexao.createStatement();
 
@@ -56,7 +54,6 @@ public class CarroDAO {
             retorno = false;
         } finally {
 
-            //Libero os recursos da memória
             try {
                 if (instrucaoSQL != null) {
                     instrucaoSQL.close();
@@ -77,10 +74,8 @@ public class CarroDAO {
         Statement instrucaoSQL = null;
 
         try {
-            //Carrega a classe responsável pelo driver
             Class.forName(DRIVER);
 
-            //Tenta estabeler a conexão com o SGBD e cria o objeto de conexão
             conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
             instrucaoSQL = conexao.createStatement();
 
@@ -105,7 +100,6 @@ public class CarroDAO {
             retorno = false;
         } finally {
 
-            //Libero os recursos da memória
             try {
                 if (instrucaoSQL != null) {
                     instrucaoSQL.close();
@@ -126,10 +120,8 @@ public class CarroDAO {
         Statement instrucaoSQL = null;
 
         try {
-            //Carrega a classe responsável pelo driver
             Class.forName(DRIVER);
 
-            //Tenta estabeler a conexão com o SGBD e cria o objeto de conexão
             conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
             instrucaoSQL = conexao.createStatement();
 
@@ -149,7 +141,6 @@ public class CarroDAO {
             retorno = false;
         } finally {
 
-            //Libero os recursos da memória
             try {
                 if (instrucaoSQL != null) {
                     instrucaoSQL.close();
@@ -169,13 +160,13 @@ public class CarroDAO {
         Statement instrucaoSQL = null;
         ResultSet rs = null;
 
-        ArrayList<CarroModel> listaCarros = new ArrayList<CarroModel>();
+        ArrayList<CarroModel> listaCarros = new ArrayList<>();
 
         try {
             Class.forName(DRIVER);
             conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
             instrucaoSQL = conexao.createStatement();
-            rs = instrucaoSQL.executeQuery("SELECT * FROM cliente;");
+            rs = instrucaoSQL.executeQuery("SELECT * FROM carro;");
 
             while (rs.next()) {
                 CarroModel c = new CarroModel();
@@ -193,7 +184,7 @@ public class CarroDAO {
             System.out.println("Erro no comando SQL.");
             listaCarros = null;
         } finally {
-            //Libero os recursos da memória
+
             try {
                 if (rs != null) {
                     rs.close();

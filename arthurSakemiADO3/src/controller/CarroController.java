@@ -16,7 +16,6 @@ import model.CarroModel;
 public class CarroController {
 
     public static boolean salvar(String modelo, int ano, double valor) {
-        //Salvo na memória
         CarroModel c = new CarroModel(modelo, ano, valor);
         return CarroDAO.salvar(c);
     }
@@ -24,7 +23,6 @@ public class CarroController {
     public static boolean editar(int id, String modelo, int ano, double valor) {
         CarroModel c = new CarroModel(id, modelo, ano, valor);
         return CarroDAO.editar(c);
-
     }
 
     public static boolean excluir(int id) {
@@ -33,17 +31,17 @@ public class CarroController {
 
     public static ArrayList<String[]> consultar() {
         ArrayList<CarroModel> carros = CarroDAO.consultar();
-        ArrayList<String[]> listaClientes = new ArrayList<>();
+        ArrayList<String[]> listaCarros = new ArrayList<>();
 
         for (int i = 0; i < carros.size(); i++) {
-            listaClientes.add(new String[]{String.valueOf(carros.get(i).getId()),
+            listaCarros.add(new String[]{String.valueOf(carros.get(i).getId()),
                 carros.get(i).getModelo(),
                 String.valueOf(carros.get(i).getAno()),
                 String.valueOf(carros.get(i).getValor())
             });
         }
 
-        return listaClientes;
+        return listaCarros;
 
     }
 
