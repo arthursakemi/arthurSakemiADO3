@@ -132,6 +132,11 @@ public class CarroView extends javax.swing.JFrame {
         });
 
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setText("Excluir");
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
@@ -224,11 +229,20 @@ public class CarroView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        CarroController.salvar(txtModelo.getText(),
-                Integer.parseInt(txtAno.getText()),
-                Double.parseDouble(txtValor.getText()));
+        try {
+            boolean salvar = CarroController.salvar(txtModelo.getText(),
+                    Integer.parseInt(txtAno.getText()),
+                    Double.parseDouble(txtValor.getText()));
+            if (salvar) {
+                loadTable();
+                JOptionPane.showMessageDialog(null, "Veículo registrado com sucesso!");
+                limparFormulario();
+                desabilitarFormulario();
+            }
+        } catch (Exception e) {
 
-        loadTable();
+        }
+
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -245,6 +259,10 @@ public class CarroView extends javax.swing.JFrame {
         CarroController.excluir(id);
         loadTable();
     }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
