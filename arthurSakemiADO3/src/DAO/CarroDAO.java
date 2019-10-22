@@ -17,9 +17,9 @@ public class CarroDAO {
 
     public static String DRIVER = "com.mysql.cj.jdbc.Driver";
     public static String LOGIN = "root";
-    public static String SENHA = "";
+    public static String SENHA = "root";
 
-    public static String URL = "jdbc:mysql://localhost:3307/lojacarro?useTimezone=true&serverTimezone=UTC&useSSL=false";
+    public static String URL = "jdbc:mysql://localhost:3306/lojacarro?useTimezone=true&serverTimezone=UTC&useSSL=false";
 
     public static boolean salvar(CarroModel c) {
         boolean retorno = false;
