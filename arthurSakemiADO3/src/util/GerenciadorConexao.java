@@ -12,11 +12,11 @@ import java.sql.SQLException;
 public class GerenciadorConexao {
 
     public static String STATUS = "Não conectado";
-    public static String DRIVER = "com.mysql.cj.jdbc.Driver";
 
+    public static String DRIVER = "com.mysql.cj.jdbc.Driver";
     public static String SERVER = "localhost";
-    public static String PORTA = ":3306";
-    public static String DATABASE = "/lojacarro";
+    public static String PORTA = ":3306";  // :xxxx
+    public static String DATABASE = "/lojacarro";  // /nomeDatabase
     public static String TIMEZONE = "?useTimezone=true&serverTimezone=UTC&useSSL=false";
 
     public static String LOGIN = "root";
