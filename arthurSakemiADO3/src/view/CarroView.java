@@ -37,7 +37,6 @@ public class CarroView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         pnlForm = new javax.swing.JPanel();
         btnCancelar = new javax.swing.JButton();
@@ -55,8 +54,6 @@ public class CarroView extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblCarros = new javax.swing.JTable();
-
-        jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -312,18 +309,20 @@ public class CarroView extends javax.swing.JFrame {
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
 
         if (tblCarros.getRowCount() > 0) {
-            if (tblCarros.getSelectedRow() >= 0) {
-                habilitarFormulario();
-
-                novo = false;
-
-                lblID.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 0).toString());
-                txtModelo.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 1).toString());
-                txtAno.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 2).toString());
-                txtValor.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 3).toString());
-            } else {
+            int linha = tblCarros.getSelectedRow();
+            if (linha < 0) {
                 JOptionPane.showMessageDialog(this, "Selecione um carro para editar!");
+                return;
             }
+            habilitarFormulario();
+
+            novo = false;
+
+            lblID.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 0).toString());
+            txtModelo.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 1).toString());
+            txtAno.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 2).toString());
+            txtValor.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 3).toString());
+
         } else {
             JOptionPane.showMessageDialog(this, "Não há clientes para editar!");
         }
@@ -445,7 +444,6 @@ public class CarroView extends javax.swing.JFrame {
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSalvar;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
