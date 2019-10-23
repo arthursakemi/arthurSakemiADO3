@@ -16,13 +16,16 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CarroView extends javax.swing.JFrame {
 
-    /**
-     * Creates new form CarroView
-     */
+    private boolean novo;
+
     public CarroView() {
         initComponents();
+
+        this.setLocationRelativeTo(null);
         loadTable();
         desabilitarFormulario();
+
+        lblID.setVisible(false);
     }
 
     /**
@@ -34,6 +37,7 @@ public class CarroView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         pnlForm = new javax.swing.JPanel();
         btnCancelar = new javax.swing.JButton();
@@ -44,12 +48,15 @@ public class CarroView extends javax.swing.JFrame {
         lblAno = new javax.swing.JLabel();
         txtModelo = new javax.swing.JTextField();
         lblModelo = new javax.swing.JLabel();
+        lblID = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         btnNovo = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnExcluir = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblCarros = new javax.swing.JTable();
+
+        jLabel1.setText("jLabel1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -78,6 +85,8 @@ public class CarroView extends javax.swing.JFrame {
 
         lblModelo.setText("Modelo: *");
 
+        lblID.setText("ID");
+
         javax.swing.GroupLayout pnlFormLayout = new javax.swing.GroupLayout(pnlForm);
         pnlForm.setLayout(pnlFormLayout);
         pnlFormLayout.setHorizontalGroup(
@@ -94,7 +103,10 @@ public class CarroView extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblValor))
+                    .addGroup(pnlFormLayout.createSequentialGroup()
+                        .addComponent(lblValor)
+                        .addGap(26, 26, 26)
+                        .addComponent(lblID)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -111,7 +123,8 @@ public class CarroView extends javax.swing.JFrame {
                         .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblModelo)
                             .addComponent(lblAno)
-                            .addComponent(lblValor))
+                            .addComponent(lblValor)
+                            .addComponent(lblID))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -153,7 +166,7 @@ public class CarroView extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Modelo", "Ano", "Valor"
             }
         ));
         jScrollPane2.setViewportView(tblCarros);
@@ -202,7 +215,6 @@ public class CarroView extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -229,39 +241,92 @@ public class CarroView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        try {
-            boolean salvar = CarroController.salvar(txtModelo.getText(),
-                    Integer.parseInt(txtAno.getText()),
-                    Double.parseDouble(txtValor.getText()));
-            if (salvar) {
-                loadTable();
-                JOptionPane.showMessageDialog(null, "Veículo registrado com sucesso!");
-                limparFormulario();
-                desabilitarFormulario();
-            }
-        } catch (Exception e) {
 
+        if (validarFormulario()) {
+
+            if (novo) {
+                if (CarroController.salvar(txtModelo.getText(),
+                        Integer.parseInt(txtAno.getText()),
+                        Double.parseDouble(txtValor.getText()))) {
+
+                    this.loadTable();
+
+                    JOptionPane.showMessageDialog(this, "Veiculo registrado com sucesso!");
+                    limparFormulario();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Falha ao registrar veículo!");
+                }
+            } else {
+                if (CarroController.editar(Integer.parseInt(lblID.getText()),
+                        txtModelo.getText(),
+                        Integer.parseInt(txtAno.getText()),
+                        Double.parseDouble(txtValor.getText()))) {
+
+                    this.loadTable();
+                    JOptionPane.showMessageDialog(this, "Veículo atualizado com sucesso!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Falha ao atualizar cliente!");
+                }
+            }
+
+            limparFormulario();
+            desabilitarFormulario();
         }
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         limparFormulario();
+        desabilitarFormulario();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        novo = true;
+        limparFormulario();
         habilitarFormulario();
     }//GEN-LAST:event_btnNovoActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        int linha = tblCarros.getSelectedRow();
-        int id = Integer.parseInt(tblCarros.getModel().getValueAt(linha, 0).toString());
-        CarroController.excluir(id);
-        loadTable();
+
+        if (tblCarros.getRowCount() > 0) {
+            int linha = tblCarros.getSelectedRow();
+            if (linha < 0) {
+                JOptionPane.showMessageDialog(this, "Selecione um veículo para excluír!");
+                return;
+            }
+            int id = Integer.parseInt(tblCarros.getModel().getValueAt(linha, 0).toString());
+
+            if (CarroController.excluir(id)) {
+                this.loadTable();
+                JOptionPane.showMessageDialog(this, "Veículo excluido da base de dados!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Falha ao excluir veículo!");
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Não há veículos para excluir!");
+        }
+
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
 
+        if (tblCarros.getRowCount() > 0) {
+            if (tblCarros.getSelectedRow() >= 0) {
+                habilitarFormulario();
+
+                novo = false;
+
+                lblID.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 0).toString());
+                txtModelo.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 1).toString());
+                txtAno.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 2).toString());
+                txtValor.setText(tblCarros.getModel().getValueAt(tblCarros.getSelectedRow(), 3).toString());
+            } else {
+                JOptionPane.showMessageDialog(this, "Selecione um carro para editar!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Não há clientes para editar!");
+        }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
@@ -301,20 +366,31 @@ public class CarroView extends javax.swing.JFrame {
 
     private boolean validarFormulario() {
 
-        if (this.txtModelo.getText().equalsIgnoreCase("")) {
+        if (txtModelo.getText().equalsIgnoreCase("")) {
             JOptionPane.showMessageDialog(this, "Defina um modelo para o carro!");
             return false;
         }
 
-        if (this.txtAno.getText().equalsIgnoreCase("")) {
+        if (txtAno.getText().equalsIgnoreCase("")) {
             JOptionPane.showMessageDialog(this, "Defina o ano do carro!");
             return false;
         }
 
-        if (this.txtValor.getText().equalsIgnoreCase("")) {
+        if (txtValor.getText().equalsIgnoreCase("")) {
             JOptionPane.showMessageDialog(this, "Defina o valor do carro!");
             return false;
         }
+
+        if (!util.Validador.validarInt(txtAno.getText())) {
+            JOptionPane.showMessageDialog(this, "Informe um número Inteiro para o Ano do Veículo!");
+            return false;
+        }
+
+        if (!util.Validador.validarDouble(txtValor.getText())) {
+            JOptionPane.showMessageDialog(this, "Informe um valor Decimal para o Valor do Veículo!");
+            return false;
+        }
+
         return true;
     }
 
@@ -369,10 +445,12 @@ public class CarroView extends javax.swing.JFrame {
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSalvar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblAno;
+    private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblModelo;
     private javax.swing.JLabel lblValor;
     private javax.swing.JPanel pnlForm;

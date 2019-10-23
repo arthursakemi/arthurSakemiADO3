@@ -76,7 +76,7 @@ public class CarroDAO {
 
             instrucaoSQL = conexao.prepareStatement(
                     "UPDATE carro SET modelo = ?, ano = ?, valor = ?"
-                    + "WHERE idcliente = ?;");
+                    + "WHERE idcarro = ?;");
 
             instrucaoSQL.setString(1, c.getModelo());
             instrucaoSQL.setInt(2, c.getAno());
@@ -116,7 +116,7 @@ public class CarroDAO {
         try {
             conexao = GerenciadorConexao.abrirConexao();
 
-            instrucaoSQL = conexao.prepareStatement("DELETE FROM carro WHERE idcliente = ?;");
+            instrucaoSQL = conexao.prepareStatement("DELETE FROM carro WHERE idcarro = ?;");
 
             instrucaoSQL.setInt(1, id);
 
