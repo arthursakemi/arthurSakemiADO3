@@ -7,50 +7,49 @@ package DAO;
 
 import model.CarroModel;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import util.GerenciadorConexao;
 
 public class CarroDAO {
-
-    public static String DRIVER = "com.mysql.cj.jdbc.Driver";
-    public static String LOGIN = "root";
-    public static String SENHA = "root";
-
-    public static String URL = "jdbc:mysql://localhost:3306/lojacarro?useTimezone=true&serverTimezone=UTC&useSSL=false";
 
     public static boolean salvar(CarroModel c) {
         boolean retorno = false;
         Connection conexao = null;
-        Statement instrucaoSQL = null;
+        PreparedStatement instrucaoSQL = null;
 
         try {
+            conexao = GerenciadorConexao.abrirConexao();
+            instrucaoSQL = conexao.prepareStatement(
+                    "INSERT INTO carro (modelo, ano, valor)"
+                    + "VALUES (?, ?, ?);",
+                    Statement.RETURN_GENERATED_KEYS);
 
-            Class.forName(DRIVER);
+            instrucaoSQL.setString(1, c.getModelo());
+            instrucaoSQL.setInt(2, c.getAno());
+            instrucaoSQL.setDouble(3, c.getValor());
 
-            conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
-            instrucaoSQL = conexao.createStatement();
-
-            int linhasAfetadas = instrucaoSQL.executeUpdate("INSERT INTO carro (modelo, ano, valor) "
-                    + "VALUES("
-                    + "'" + c.getModelo() + "'" + ","
-                    + c.getAno() + ","
-                    + c.getValor() + ")"
-            );
+            int linhasAfetadas = instrucaoSQL.executeUpdate();
 
             if (linhasAfetadas > 0) {
                 retorno = true;
+                ResultSet generatedKeys = instrucaoSQL.getGeneratedKeys();
+
+                if (generatedKeys.next()) {
+                    c.setId(generatedKeys.getInt(1));
+                } else {
+                    throw new SQLException("Falha ao obter o ID do carro!");
+                }
+
             } else {
                 retorno = false;
             }
 
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Driver não encontrado.");
-            retorno = false;
-        } catch (SQLException ex) {
-            System.out.println("Erro no comando SQL.");
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println(ex.getMessage());
             retorno = false;
         } finally {
 
@@ -58,9 +57,8 @@ public class CarroDAO {
                 if (instrucaoSQL != null) {
                     instrucaoSQL.close();
                 }
-                if (conexao != null) {
-                    conexao.close();
-                }
+                GerenciadorConexao.fecharConexao();
+
             } catch (SQLException ex) {
             }
         }
@@ -71,43 +69,39 @@ public class CarroDAO {
     public static boolean editar(CarroModel c) {
         boolean retorno = false;
         Connection conexao = null;
-        Statement instrucaoSQL = null;
+        PreparedStatement instrucaoSQL = null;
 
         try {
-            Class.forName(DRIVER);
+            conexao = GerenciadorConexao.abrirConexao();
 
-            conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
-            instrucaoSQL = conexao.createStatement();
+            instrucaoSQL = conexao.prepareStatement(
+                    "UPDATE carro SET modelo = ?, ano = ?, valor = ?"
+                    + "WHERE idcliente = ?;");
 
-            int linhasAfetadas = instrucaoSQL.executeUpdate("UPDATE carro"
-                    + "SET modelo = '" + c.getModelo() + "',"
-                    + "ano = " + c.getAno() + ","
-                    + "valor = " + c.getValor()
-                    + "WHERE idcarro = " + c.getId()
-            );
+            instrucaoSQL.setString(1, c.getModelo());
+            instrucaoSQL.setInt(2, c.getAno());
+            instrucaoSQL.setDouble(3, c.getValor());
+            instrucaoSQL.setInt(4, c.getId());
 
-            if (linhasAfetadas > 0) {
-                retorno = true;
-            } else {
-                retorno = false;
-            }
+            int linhasAfetadas = instrucaoSQL.executeUpdate();
 
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Driver não encontrado.");
+            retorno = linhasAfetadas > 0;
+
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
             retorno = false;
-        } catch (SQLException ex) {
-            System.out.println("Erro no comando SQL.");
-            retorno = false;
+
         } finally {
 
             try {
                 if (instrucaoSQL != null) {
                     instrucaoSQL.close();
                 }
-                if (conexao != null) {
-                    conexao.close();
-                }
+
+                GerenciadorConexao.fecharConexao();
+
             } catch (SQLException ex) {
+
             }
         }
 
@@ -117,37 +111,37 @@ public class CarroDAO {
     public static boolean excluir(int id) {
         boolean retorno = false;
         Connection conexao = null;
-        Statement instrucaoSQL = null;
+        PreparedStatement instrucaoSQL = null;
 
         try {
-            Class.forName(DRIVER);
+            conexao = GerenciadorConexao.abrirConexao();
 
-            conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
-            instrucaoSQL = conexao.createStatement();
+            instrucaoSQL = conexao.prepareStatement("DELETE FROM carro WHERE idcliente = ?;");
 
-            int linhasAfetadas = instrucaoSQL.executeUpdate("DELETE FROM carro WHERE idcarro = " + id);
+            instrucaoSQL.setInt(1, id);
+
+            int linhasAfetadas = instrucaoSQL.executeUpdate();
 
             if (linhasAfetadas > 0) {
                 retorno = true;
+
             } else {
                 retorno = false;
             }
 
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Driver não encontrado.");
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
             retorno = false;
-        } catch (SQLException ex) {
-            System.out.println("Erro no comando SQL.");
-            retorno = false;
+
         } finally {
 
             try {
                 if (instrucaoSQL != null) {
                     instrucaoSQL.close();
                 }
-                if (conexao != null) {
-                    conexao.close();
-                }
+
+                GerenciadorConexao.fecharConexao();
+
             } catch (SQLException ex) {
             }
         }
@@ -157,16 +151,17 @@ public class CarroDAO {
 
     public static ArrayList<CarroModel> consultar() {
         Connection conexao = null;
-        Statement instrucaoSQL = null;
+        PreparedStatement instrucaoSQL = null;
         ResultSet rs = null;
 
         ArrayList<CarroModel> listaCarros = new ArrayList<>();
 
         try {
-            Class.forName(DRIVER);
-            conexao = DriverManager.getConnection(URL, LOGIN, SENHA);
-            instrucaoSQL = conexao.createStatement();
-            rs = instrucaoSQL.executeQuery("SELECT * FROM carro;");
+
+            conexao = GerenciadorConexao.abrirConexao();
+            instrucaoSQL = conexao.prepareStatement("SELECT * FROM carro;");
+
+            rs = instrucaoSQL.executeQuery();
 
             while (rs.next()) {
                 CarroModel c = new CarroModel();
@@ -177,11 +172,8 @@ public class CarroDAO {
                 listaCarros.add(c);
             }
 
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Driver não encontrado.");
-            listaCarros = null;
-        } catch (SQLException ex) {
-            System.out.println("Erro no comando SQL.");
+        } catch (SQLException | ClassNotFoundException ex) {
+            System.out.println(ex.getMessage());
             listaCarros = null;
         } finally {
 
@@ -192,9 +184,9 @@ public class CarroDAO {
                 if (instrucaoSQL != null) {
                     instrucaoSQL.close();
                 }
-                if (conexao != null) {
-                    conexao.close();
-                }
+
+                GerenciadorConexao.fecharConexao();
+
             } catch (SQLException ex) {
             }
         }
